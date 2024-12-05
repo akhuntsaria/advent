@@ -39,7 +39,7 @@ class Day5 {
                     for (int i = 1;i < l.size();i++) {
                         if (order.get(l.get(i)) != null && order.get(l.get(i)).contains(l.get(i-1))) {
                             correct = false;
-                            swap(l, i, i-1);
+                            break;
                         }
                     }
                     if (!correct) {
@@ -58,12 +58,6 @@ class Day5 {
             }
         }
         System.out.println(sum);
-    }
-
-    private static void swap(List<Integer> l, int a, int b) {
-        var tmp = l.get(a);
-        l.set(a, l.get(b));
-        l.set(b, tmp);
     }
 }
 /*
