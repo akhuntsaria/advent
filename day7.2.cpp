@@ -25,13 +25,12 @@ bool valid(u64 targ_sum, const vector<u64>& operands, u64 curr_sum, int i) {
 
 long long process_line(const string& line) {
     istringstream iss(line);
-    string parts;
-    getline(iss, parts, ':');
-    
-    u64 sum = stoll(parts);
+    u64 sum;
+    char colon;
+    iss >> sum >> colon;
+
     vector<u64> operands;
     string operand;
-    
     while (iss >> operand) {
         if (!operand.empty()) {
             operands.push_back(stoll(operand));
