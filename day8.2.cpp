@@ -43,11 +43,6 @@ int main() {
                 int xd = a.first - b.first;
                 int yd = a.second - b.second;
 
-                vector<pair<int, int>> curr = {
-                    {a.first + xd, a.second + yd},
-                    {b.first - xd, b.second - yd}
-                };
-
                 for (int k = a.first,l = a.second;k >= 0 && k < width && l >= 0 && l < height;k += xd,l += yd) {
                     if (k == b.first && l == b.second) continue;
                     antinodes.insert({k, l});
