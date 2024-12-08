@@ -56,12 +56,6 @@ int main() {
                     if (k == a.first && l == a.second) continue;
                     antinodes.insert({k, l});
                 }
-
-                for (const auto& p : curr) {
-                    if (p.first >= 0 && p.first < width && p.second >= 0 && p.second < height) {
-                        antinodes.insert(p);
-                    }
-                }
             }
         }
     }
