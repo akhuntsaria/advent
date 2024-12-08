@@ -8,13 +8,13 @@
 using namespace std;
 
 struct pair_hash {
-    inline std::size_t operator()(const std::pair<int,int> & v) const {
-        return v.first*31+v.second;
+    inline size_t operator()(const pair<int,int>& v) const {
+        return v.first * 31 + v.second;
     }
 };
 
-int main() {
-    ifstream file("input8.2.txt");
+int main(int argc, char* argv[]) {
+    ifstream file(argv[1]);
 
     unordered_map<char, vector<pair<int, int>>> ants;
     vector<string> map;
@@ -49,7 +49,7 @@ int main() {
                 };
 
                 for (const auto& p : curr) {
-                    if (p.first >= 0 && p.first < width && p.second >= 0 && p.second < height) {
+                    if (p.first >= 0 && p.first < height && p.second >= 0 && p.second < width) {
                         antinodes.insert(p);
                     }
                 }
