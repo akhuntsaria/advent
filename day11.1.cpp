@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
         vector<u64> new_stones;
         for (auto stone : stones) {
             if (stone == 0) {
-                new_stones.push_back(1ULL);
+                new_stones.push_back(1);
             } else {
                 string str = to_string(stone);
                 if (str.length() % 2 == 0) {
