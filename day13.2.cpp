@@ -26,7 +26,7 @@ pair<int, int> parse_line(string& line, char sep) {
     return {first, second};
 }
 
-i64 min_tokens(int adx, int ady, int bdx, int bdy, i64 px, i64 py) {
+i64 cramer(int adx, int ady, int bdx, int bdy, i64 px, i64 py) {
     i64 det = adx * bdy - bdx * ady;
 
     i64 a = bdy * px - bdx * py;
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
         getline(file, line);
         auto [px, py] = parse_line(line, '=');
 
-        sum += min_tokens(adx, ady, bdx, bdy, px + 10000000000000ll, py + 10000000000000ll);
+        sum += cramer(adx, ady, bdx, bdy, px + 10000000000000ll, py + 10000000000000ll);
     }
     cout << sum << endl;
     return 0;
@@ -68,8 +68,6 @@ Prize: X=8400, Y=5400
 
 8400/22 
 5400/34
-
-Inverse matrix method
 
 94a + 22b = 8400
 34a + 67b = 5400
