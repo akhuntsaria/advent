@@ -27,10 +27,11 @@ bool can_move(vector<string>& m, int i, int j, char dir) {
 
 void move(vector<string>& m, int i, int j, char dir) {
     if (m[i][j] == ']') j--;
+    else if (m[i][j] != '[') return;
 
     if (dir == '<') {
         if (m[i][j-1] == ']') {
-            move(m, i, j-2, dir);
+            move(m, i, j-1, dir);
         }
         if (m[i][j-1] == '.') {
             m[i][j+1] = '.';
@@ -103,15 +104,7 @@ int main(int argc, char* argv[]) {
 
     for (char dir : moves) {
         int ni = ri + dirs[dir].first, nj = rj + dirs[dir].second;
-        if (dir == '^' || dir == 'v') {
-            if (m[ni][rj] == '[' || m[ni][rj] == ']') {
-                move(m, ni, rj, dir);
-            }
-        } else { // <>
-            if (m[ri][nj] == '[' || m[ri][nj] == ']') {
-                move(m, ri, nj, dir);
-            }
-        }
+        move(m, ni, nj, dir);
         if (m[ni][nj] == '.') {
             m[ri][rj] = '.';
             m[ni][nj] = '@';
