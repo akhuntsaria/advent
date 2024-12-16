@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
     int m = map.size(), n = map[0].size(), si = m - 2, sj = 1, ei = 1, ej = n - 2, dir = 1;
 
     vector<vector<vector<int>>> points(m, vector<vector<int>>(n, vector<int>(4, INT_MAX)));
-    unordered_set<pair<int,int>,pair_hash> best, path;
+    pair_set best, path;
 
     walk(map, best, path, points, si, sj, 1, 0);
 
