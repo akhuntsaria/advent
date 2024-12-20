@@ -1,20 +1,27 @@
 #include <iostream>
 #include <fstream>
-#include <vector>
+#include <queue>
 #include <string>
 #include <sstream>
+#include <tuple>
 #include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
 using namespace std;
 
-void walk(vector<string>& map, vector<vector<int>>& points, int i, int j, int dir, int p) {
-    int m = map.size(), n = map[0].size();
-    if (i < 0 || j < 0 || i >= m || j >= n || map[i][j] == '#' || points[i][j] <= p) return;
-    points[i][j] = p;
-    walk(map, points, i-1, j, 0, p + (dir == 0 ? 1 : 1001));
-    walk(map, points, i, j+1, 1, p + (dir == 1 ? 1 : 1001));
-    walk(map, points, i+1, j, 2, p + (dir == 2 ? 1 : 1001));
-    walk(map, points, i, j-1, 3, p + (dir == 3 ? 1 : 1001));
+struct vector_hash {
+    inline size_t operator()(const vector<int>& v) const {
+        size_t h = 0;
+        for (auto n : v) h = h * 31 + n;
+        return h;
+    }
+};
+
+vector<vector<int>> dirs = {{-1,0},{0,1},{1,0},{0,-1}};
+
+bool valid(vector<string>& map, int i, int j) {
+    return i >= 0 && j >= 0 && i < map.size() && j < map[i].size() && map[i][j] != '#';
 }
 
 int main(int argc, char* argv[]) {
@@ -25,28 +32,41 @@ int main(int argc, char* argv[]) {
     while (getline(file, line)) {
         map.push_back(line);
     }
-    int m = map.size(), n = map[0].size(), si = m - 2, sj = 1, ei = 1, ej = n - 2;
+    int m = map.size(), n = map[0].size(), si = m - 2, sj = 1;
 
-    vector<vector<int>> points(m, vector<int>(n, INT_MAX));
-    walk(map, points, si, sj, 1, 0);
-    cout << points[ei][ej] << endl;
+    auto cmp = [](vector<int>& left, vector<int>& right) { return left[3] > right[3]; };
+    priority_queue<vector<int>,vector<vector<int>>,decltype(cmp)> q(cmp);
+    q.push({si,sj,1,0});
+
+    unordered_set<vector<int>,vector_hash> v;
+
+    while (!q.empty()) {
+        auto curr = q.top();
+        q.pop();
+
+        int i = curr[0], j = curr[1], d = curr[2], p = curr[3];
+
+        if (map[i][j] == 'E') {
+            cout << p << endl;
+            break;
+        }
+
+        if (v.contains({i,j})) continue;
+        v.insert({i,j});
+
+        int ni = i+dirs[d][0], nj = j+dirs[d][1];
+        if (valid(map, ni, nj)) {
+            q.push({ni, nj, d, p+1});
+        }
+        
+        for (int rot : {-1, 1}) {
+            auto nd = (d + rot + 4) % 4;
+            ni = i + dirs[nd][0];
+            nj = j + dirs[nd][1];
+            if (!valid(map, ni, nj)) continue;
+            q.push({ni, nj, nd, p+1001});
+        }
+    }
+
     return 0;
 }
-/*
-
-###############
-#.......#....E#
-#.#.###.#.###^#
-#.....#.#...#^#
-#.###.#####.#^#
-#.#.#.......#^#
-#.#.#####.###^#
-#..>>>>>>>>v#^#
-###^#.#####v#^#
-#>>^#.....#v#^#
-#^#.#.###.#v#^#
-#^....#...#v#^#
-#^###.#.#.#v#^#
-#S..#.....#>>^#
-###############
-*/
