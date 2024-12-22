@@ -1,11 +1,13 @@
-#include <cmath>
-#include <iostream>
-#include <fstream>
-#include <queue>
 #include <algorithm>
+#include <cmath>
+#include <fstream>
+#include <functional>
+#include <iostream>
 #include <map>
-#include <string>
+#include <numeric>
+#include <queue>
 #include <sstream>
+#include <string>
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>
@@ -70,9 +72,13 @@ struct pair_hash {
 };
 
 struct vector_hash {
-    inline size_t operator()(const vector<int>& v) const {
+    template <typename T>
+    inline size_t operator()(const vector<T>& v) const {
         size_t h = 0;
-        for (auto n : v) h = h * 31 + n;
+        hash<T> hasher;
+        for (const T& e : v) {
+            h ^= hasher(e) + 0x9e3779b9 + (h << 6) + (h >> 2);
+        }
         return h;
     }
 };

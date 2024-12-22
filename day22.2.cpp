@@ -13,12 +13,12 @@ int main(int argc, char* argv[]) {
     ifstream file(argv[1]);
 
     string line;
-    vector<vector<u64>> secrets;
+    vector<vector<int>> secrets;
     int i = 0;
     
     while (getline(file, line)) {
         u64 secret = stoull(line);
-        secrets.push_back(vector<u64>());
+        secrets.push_back(vector<int>());
         secrets[i].push_back(secret%10);
         for (int j = 0;j < 2000;j++) {
             secret = step(secret);
