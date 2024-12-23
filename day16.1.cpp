@@ -1,22 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <queue>
-#include <string>
-#include <sstream>
-#include <tuple>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
-
-using namespace std;
-
-struct vector_hash {
-    inline size_t operator()(const vector<int>& v) const {
-        size_t h = 0;
-        for (auto n : v) h = h * 31 + n;
-        return h;
-    }
-};
+#include "util.cpp"
 
 vector<vector<int>> dirs = {{-1,0},{0,1},{1,0},{0,-1}};
 

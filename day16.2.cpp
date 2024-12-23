@@ -1,51 +1,14 @@
-#include <deque>
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <sstream>
-#include <unordered_map>
-#include <unordered_set>
+#include "util.cpp"
 
-using namespace std;
-
-struct pair_hash {
-    inline size_t operator()(const pair<int,int>& v) const {
-        return v.first * 31 + v.second;
-    }
+struct state {
+    int i, j, dir, points;
+    vector<pair<int,int>> path;
 };
 
-typedef unordered_set<pair<int,int>,pair_hash> pair_set;
+vector<vector<int>> dirs = {{-1,0},{0,1},{1,0},{0,-1}};
 
-int minp = INT_MAX;
-
-void walk(vector<string>& map, 
-          pair_set& best, 
-          pair_set& path, 
-          vector<vector<vector<int>>>& points, 
-          int i, int j, int dir, int p) {
-
-    int m = map.size(), n = map[0].size();
-    if (i < 0 || j < 0 || i >= m || j >= n || map[i][j] == '#' 
-        || path.contains({i,j}) || points[i][j][dir] < p) return;
-    points[i][j][dir] = p;
-
-    if (map[i][j] == 'E') {
-        if (p < minp) {
-            best.clear();
-            minp = p;
-        }
-        for (auto& tile : path) {
-            best.insert(tile);
-        }
-        return;
-    }
-    path.insert({i,j});
-    walk(map, best, path, points, i-1, j, 0, p + (dir == 0 ? 1 : 1001));
-    walk(map, best, path, points, i, j+1, 1, p + (dir == 1 ? 1 : 1001));
-    walk(map, best, path, points, i+1, j, 2, p + (dir == 2 ? 1 : 1001));
-    walk(map, best, path, points, i, j-1, 3, p + (dir == 3 ? 1 : 1001));
-    path.erase({i,j});
+bool valid(vector<string>& map, int i, int j) {
+    return i >= 0 && j >= 0 && i < map.size() && j < map[i].size() && map[i][j] != '#';
 }
 
 int main(int argc, char* argv[]) {
@@ -56,33 +19,54 @@ int main(int argc, char* argv[]) {
     while (getline(file, line)) {
         map.push_back(line);
     }
-    int m = map.size(), n = map[0].size(), si = m - 2, sj = 1, ei = 1, ej = n - 2, dir = 1;
+    int m = map.size(), n = map[0].size(), si = m - 2, sj = 1;
 
-    vector<vector<vector<int>>> points(m, vector<vector<int>>(n, vector<int>(4, INT_MAX)));
-    pair_set best, path;
+    queue<state> q;
+    q.push({si,sj,1,0,{{si,sj}}});
 
-    walk(map, best, path, points, si, sj, 1, 0);
+    unordered_map<vector<int>,int,vector_hash> v;
+    unordered_set<pair<int,int>,pair_hash> best;
 
-    best.insert({ei,ej});
+    int minp = INT_MAX;
+
+    while (!q.empty()) {
+        auto c = q.front();
+        q.pop();
+
+        vector<int> key = {c.i,c.j,c.dir};
+        if (v.contains(key) && c.points > v[key]) continue;
+        v[key] = c.points;
+
+        if (map[c.i][c.j] == 'E') {
+            if (c.points < minp) {
+                best.clear();
+                minp = c.points;
+            }
+            if (c.points == minp) {
+                best.insert(c.path.begin(), c.path.end());
+            }
+            continue;
+        }
+
+        int ni = c.i + dirs[c.dir][0],
+            nj = c.j + dirs[c.dir][1];
+        if (valid(map, ni, nj)) {
+            auto new_path = c.path;
+            new_path.push_back({ni,nj});
+            q.push({ni, nj, c.dir, c.points + 1, new_path});
+        }
+
+        for (int rot : {-1, 1}) {
+            auto ndir = (c.dir + rot + 4) % 4;
+            ni = c.i + dirs[ndir][0];
+            nj = c.j + dirs[ndir][1];
+            if (!valid(map, ni, nj)) continue;
+            auto new_path = c.path;
+            new_path.push_back({ni,nj});
+            q.push({ni, nj, ndir, c.points + 1001, new_path});
+        }
+    }
     cout << best.size() << endl;
+
     return 0;
 }
-/*
-each cell, each direction -> points
-
-###############
-#.......#....O#
-#.#.###.#.###O#
-#.....#.#...#O#
-#.###.#####.#O#
-#.#.#.......#O#
-#.#.#####.###O#
-#..OOOOOOOOO#O#
-###O#O#####O#O#
-#OOO#O....#O#O#
-#O#O#O###.#O#O#
-#OOOOO#...#O#O#
-#O###.#.#.#O#O#
-#O..#.....#OOO#
-###############
-*/

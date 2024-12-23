@@ -3,9 +3,11 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include <iterator>
 #include <map>
 #include <numeric>
 #include <queue>
+#include <set>
 #include <sstream>
 #include <string>
 #include <tuple>
@@ -26,9 +28,10 @@ bool eq(const vector<T>& a, const vector<T>& b) {
     return true;
 }
 
-template <typename T>
-void print(T param) {
-    cout << param << endl;
+template <typename... Args>
+void print(const Args&... args) {
+    ((cout << args << " "), ...);
+    cout << endl;
 }
 
 template <typename K, typename V>
@@ -48,9 +51,19 @@ void print(const unordered_map<K, V>& map) {
 }
 
 template <typename T>
+struct is_pair : false_type {};
+
+template <typename T1, typename T2>
+struct is_pair<pair<T1, T2>> : true_type {};
+
+template <typename T>
 void print(const vector<T>& vec) {
     for (const auto& element : vec) {
-        cout << element << ' ';
+        if constexpr (is_pair<T>::value) {
+            cout << '(' << element.first << ", " << element.second << ") ";
+        } else {
+            cout << element << ' ';
+        }
     }
     cout << endl;
 }
@@ -58,10 +71,7 @@ void print(const vector<T>& vec) {
 template <typename T>
 void print(const vector<vector<T>>& vec) {
     for (const auto& inner : vec) {
-        for (const auto& element : inner) {
-            cout << element << ' ';
-        }
-        cout << endl;
+        print(inner);
     }
 }
 
