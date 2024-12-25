@@ -39,7 +39,7 @@ vector<int> run(vector<int>& prog, u64 a) {
 }
 
 u64 find_a(vector<int>& prog, u64 end_i, u64 a) {
-    for (int i = 0;i <= 8;i++) {
+    for (int i = 0;i < 8;i++) {
         u64 a1 = a*8 + i;
         vector<int> out = run(prog, a1);
         bool eq = true;
