@@ -1,17 +1,6 @@
-#include <cmath>
-#include <iostream>
-#include <fstream>
-#include <queue>
-#include <string>
-#include <sstream>
-#include <tuple>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
+#include "util.cpp"
 
-using namespace std;
-
-int combo(int operand, int a, int b, int c) {
+u64 combo(int operand, u64 a, u64 b, u64 c) {
     if (operand == 4) return a;
     if (operand == 5) return b;
     if (operand == 6) return c;
@@ -21,7 +10,7 @@ int combo(int operand, int a, int b, int c) {
 int main(int argc, char* argv[]) {
     ifstream file(argv[1]);
 
-    int a, b, c;
+    u64 a, b, c;
     vector<int> prog;
     string line;
     getline(file, line);
@@ -64,37 +53,27 @@ int main(int argc, char* argv[]) {
         int opcode = prog[ptr],
             operand = prog[ptr+1];
         if (opcode == 0) {
-            int res = a / (int)pow(2, combo(operand, a, b, c));
-            a = res;
-            ptr += 2;
+            a /= (u64)pow(2, combo(operand, a, b, c));
         } else if (opcode == 1) {
-            int res = b ^ operand;
-            b = res;
-            ptr += 2;
+            b ^= operand;
         } else if (opcode == 2) {
-            int res = combo(operand, a, b, c) % 8;
-            b = res;
-            ptr += 2;
+            b = combo(operand, a, b, c) % 8;
         } else if (opcode == 3) {
             if (a != 0) {
                 ptr = operand;
-            } else {
-                ptr += 2;
+                continue;
             }
         } else if (opcode == 4) {
             b ^= c;
-            ptr += 2;
         } else if (opcode == 5) {
             out += to_string(combo(operand, a, b, c) % 8);
             out += ',';
-            ptr += 2;
         } else if (opcode == 6) {
-            b = a / (int)pow(2, combo(operand, a, b, c));
-            ptr += 2;
+            b = a / (u64)pow(2, combo(operand, a, b, c));
         } else { // 7
-            c = a / (int)pow(2, combo(operand, a, b, c));
-            ptr += 2;
+            c = a / (u64)pow(2, combo(operand, a, b, c));
         }
+        ptr += 2;
     }
     cout << out << endl;
     return 0;
