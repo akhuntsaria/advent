@@ -34,6 +34,11 @@ void print(const Args&... args) {
     cout << endl;
 }
 
+template <typename T>
+void print(pair<T,T> p) {
+    cout << p.first << ':' << p.second << endl;
+}
+
 template <typename K, typename V>
 void print(const map<K, V>& map) {
     for (const auto& pair : map) {
@@ -46,6 +51,14 @@ template <typename K, typename V>
 void print(const unordered_map<K, V>& map) {
     for (const auto& pair : map) {
         cout << pair.first << ':' << pair.second << ' ';
+    }
+    cout << endl;
+}
+
+template <typename T>
+void print(const unordered_set<T>& set) {
+    for (const auto& e : set) {
+        cout << e << ' ';
     }
     cout << endl;
 }
